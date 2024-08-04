@@ -2,7 +2,8 @@
     <arg name="sim_time_required" default="true"/>
     <param name="use_sim_time" value="$(arg sim_time_required)"/>
 
-    <arg name="config_dir" default="$(find hydra)/config/uhumans2"/>
+    <!-- NOTE: use habitat as render backend and frontend -->
+    <arg name="config_dir" default="$(find hydra)/config/habitat"/>
     <arg name="use_gt_frame" default="true" doc="use simulator-provided tf frame"/>
     <arg name="use_gt_semantics" default="true" doc="use simulator-provider semantics"/>
     <arg name="use_static_tfs" default="true" doc="publish static tfs from file"/>
@@ -11,9 +12,10 @@
     <arg name="use_2d_places" default="true"/>
     <arg name="use_single_channel_label_image" default="false"/>
 
-    <arg name="robot_frame" default="$(eval 'base_link_gt' if arg('use_gt_frame') else 'base_link_kimera')" doc="robot body tf frame"/>
-    <arg name="odom_frame" default="$(eval 'world' if arg('use_gt_frame') else 'odom')" doc="odometry (map) frame"/>
-    <arg name="sensor_frame" default="$(eval 'left_cam' if arg('use_gt_frame') else 'left_cam_kimera')" doc="camera frame"/>
+    <!-- NOTE: this is to align with CMU dev low level navigation -->
+    <arg name="robot_frame" default="vehicle" doc="robot body tf frame, used as the central reference point for robot components"/>
+    <arg name="odom_frame" default="map" doc="odometry (map) frame, used as the starting point for navigation and localization"/>
+    <arg name="sensor_frame" default="sensor" doc="primary sensor frame, used for initial state estimations and primary sensor data"/>
 
     <!-- ADAM MODIFED HERE -->
     <arg name="use_zmq_interface" default="false"/>
@@ -23,23 +25,34 @@
 
 
     <!-- semantics -->
+    <!-- TODO: Correct this! -->
     <arg name="labelspace_name" default="$(eval 'uhumans2_office' if arg('use_gt_semantics') else 'ade20k_mp3d')" doc="semantic label space"/>
     <arg name="semantic_map_dir" default="$(find hydra_ros)/config/color" if="$(arg use_gt_semantics)"/>
     <arg name="semantic_map_dir" default="$(find semantic_inference)/config/colors" unless="$(arg use_gt_semantics)"/>
     <arg name="semantic_map_path" default="$(arg semantic_map_dir)/$(arg labelspace_name).csv"/>
     <arg name="semantic_label_remap_filepath" default="$(find hydra)/config/label_remaps/uhumans2_office.yaml" if="$(arg use_single_channel_label_image)"/>
 
-    <arg name="rgb_topic" default="/tesse/left_cam/rgb/image_raw"/>
+    <!-- <arg name="rgb_topic" default="/tesse/left_cam/rgb/image_raw"/>
     <arg name="rgb_info_topic" default="/tesse/left_cam/camera_info"/>
     <arg name="depth_topic" default="/tesse/depth_cam/mono/image_raw"/>
     <arg name="label_topic" default="/semantic/image_raw" unless="$(arg use_gt_semantics)"/>
     <arg name="label_topic" default="$(eval '/tesse/seg_cam/converted/image_raw' if arg('use_single_channel_label_image') else '/tesse/seg_cam/rgb/image_raw')" 
-                            if="$(arg use_gt_semantics)"/>
+                            if="$(arg use_gt_semantics)"/> -->
 
-    <arg name="prerecorded_topic" default="/oneformer/labels/image_raw"/>
+    <!-- ADAM: changed to match habitat frontend render topics -->
+    <arg name="rgb_topic" default="/habitat_camera/color/image"/>
+    <arg name="rgb_info_topic" default="/habitat_camera/color/camera_info"/>
+    <arg name="depth_topic" default="/habitat_camera/depth/image"/>
+    <arg name="label_topic" default="/habitat_camera/semantic/image" unless="$(arg use_gt_semantics)"/>
 
-    <include file="$(find hydra_ros)/launch/static_tfs/uhumans2_static_tfs.xml" if="$(arg use_static_tfs)"/>
+    <arg name="debug" default="false"/>
 
+    <!-- NOTE USED???? -->
+    <!-- <arg name="prerecorded_topic" default="/oneformer/labels/image_raw"/> -->
+
+    <include file="$(find hydra_ros)/launch/static_tfs/cmu_adam_fake_car.xml" if="$(arg use_static_tfs)"/>
+
+    <!-- TODO: Maybe this is not needed -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="fake_world_tf" args="0 0 0 0 0 0 1 map world" if="$(arg use_gt_frame)"/>
 
     <include file="$(find semantic_inference_ros)/launch/semantic_inference.launch"

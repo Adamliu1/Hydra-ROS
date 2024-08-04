@@ -1,0 +1,15 @@
+<!-- NOTE: this is for CMU low-level dev env. -->
+<launch>
+    <arg name="vehicleHeight" default="0.5"/>
+    <arg name="cameraOffsetZ" default="0"/>
+    <arg name="sensorOffsetX" default="0"/>
+    <arg name="sensorOffsetY" default="0"/>
+
+    <!-- Static Transform for Camera -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="camera_static_tf"
+          args="0 0 $(arg cameraOffsetZ) 0 0 0 1 base_link camera_link" />
+
+    <!-- Static Transform for LIDAR -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="lidar_static_tf"
+          args="$(arg sensorOffsetX) $(arg sensorOffsetY) $(arg vehicleHeight) 0 0 0 1 base_link lidar_link" />
+</launch>
