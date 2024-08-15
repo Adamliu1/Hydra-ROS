@@ -133,6 +133,8 @@ Camera::Config RosCameraIntrinsics::makeCameraConfig(const YAML::Node& data,
   ros::Subscriber sub =
       nh.subscribe(config.topic, 1, &CameraInfoFunctor::callback, &functor);
 
+  // LOG(INFO) << "test_print_config" << std::endl << config::toString(config);
+
   LOG(INFO) << "Waiting for CameraInfo on " << resolved_topic
             << " to initialize sensor model";
   ros::WallRate r(10);

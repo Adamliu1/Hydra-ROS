@@ -66,6 +66,7 @@
     <arg name="zmq_publish_mesh" default="true"/>
     <!-- misc visualization -->
     <arg name="start_visualizer" default="true"/>
+    <!-- <arg name="start_pose_graph_viewer" default="true"/> -->
     <arg name="start_pose_graph_viewer" default="false"/>
     <arg name="visualize_objects" default="false"/>
     <arg name="visualize_places" default="false"/>
@@ -77,8 +78,6 @@
     <!-- logging output for hydra -->
     <arg name="dsg_output_dir" default="$(find hydra)/output/"/>
     <arg name="dsg_output_prefix" default="$(arg dataset_name)"/>
-    <!-- TODO: this is tmp change -->
-    <!-- <arg name="dsg_output_prefix" default="$(arg dataset_name)_adam_test"/> -->
     <arg name="log_timing_incrementally" default="false"/>
     <arg name="dsg_path" default="$(arg dsg_output_dir)/$(arg dsg_output_prefix)"/>
     <!-- <arg name="start_logger" default="false"/> -->

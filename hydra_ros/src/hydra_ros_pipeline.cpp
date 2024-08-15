@@ -115,6 +115,7 @@ void HydraRosPipeline::initBackend() {
   }
 
   if (frontend->config.surface_places) {
+    // LOG(INFO) << "Setting up surface places update";
     auto places_functor =
         std::make_shared<Update2dPlacesFunctor>(backend->config.places2d_config);
     backend->setUpdateFunctor(DsgLayers::MESH_PLACES, places_functor);

@@ -21,7 +21,6 @@
     <arg name="zmq_send_url" default="tcp://$(arg zmq_ip):1641"/>
     <arg name="zmq_recv_url" default="tcp://$(arg zmq_ip):1642"/> -->
 
-
     <!-- semantics -->
     <arg name="labelspace_name" default="$(eval 'uhumans2_office' if arg('use_gt_semantics') else 'ade20k_mp3d')" doc="semantic label space"/>
     <arg name="semantic_map_dir" default="$(find hydra_ros)/config/color" if="$(arg use_gt_semantics)"/>
@@ -36,7 +35,8 @@
     <arg name="label_topic" default="$(eval '/tesse/seg_cam/converted/image_raw' if arg('use_single_channel_label_image') else '/tesse/seg_cam/rgb/image_raw')" 
                             if="$(arg use_gt_semantics)"/>
 
-    <arg name="prerecorded_topic" default="/oneformer/labels/image_raw"/>
+    <!-- TODO: find out what this does, if I remove this, the system returns unable to mind mapping between map and robot_frame -->
+    <!-- <arg name="prerecorded_topic" default="/oneformer/labels/image_raw"/> -->
 
     <include file="$(find hydra_ros)/launch/static_tfs/uhumans2_static_tfs.xml" if="$(arg use_static_tfs)"/>
 

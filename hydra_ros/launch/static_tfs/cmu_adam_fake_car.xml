@@ -7,9 +7,9 @@
 
     <!-- Static Transform for Camera -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="camera_static_tf"
-          args="0 0 $(arg cameraOffsetZ) 0 0 0 1 base_link camera_link" />
+          args="0 0 $(arg cameraOffsetZ) 0 0 0 1 vehicle camera_link" />
 
     <!-- Static Transform for LIDAR -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="lidar_static_tf"
-          args="$(arg sensorOffsetX) $(arg sensorOffsetY) $(arg vehicleHeight) 0 0 0 1 base_link lidar_link" />
+          args="$(arg sensorOffsetX) $(arg sensorOffsetY) $(arg vehicleHeight) 0 0 0 1 vehicle lidar_link" />
 </launch>

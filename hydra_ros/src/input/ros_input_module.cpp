@@ -62,6 +62,8 @@ RosInputModule::RosInputModule(const Config& config, const OutputQueue::Ptr& que
       have_first_pose_(false) {
   buffer_.reset(new tf2_ros::Buffer(ros::Duration(config.tf_buffer_size_s)));
   tf_listener_.reset(new tf2_ros::TransformListener(*buffer_));
+  // print config
+  // LOG(INFO) << printInfo();
 }
 
 RosInputModule::~RosInputModule() = default;
@@ -78,6 +80,7 @@ PoseStatus RosInputModule::getBodyPose(uint64_t timestamp_ns) {
       config.tf_max_tries > 0 ? std::optional<size_t>(config.tf_max_tries)
                               : std::nullopt;
 
+  // TODO: verify the code usage here, I think it's for loading ODOM from the robot
   ros::Time curr_ros_time;
   curr_ros_time.fromNSec(timestamp_ns);
   const auto pose_status = lookupTransform(*buffer_,
@@ -88,6 +91,8 @@ PoseStatus RosInputModule::getBodyPose(uint64_t timestamp_ns) {
                                            config.tf_wait_duration_s,
                                            config.tf_verbosity);
 
+
+  // LOG(INFO) << "Pose status: " << pose_status;
   if (pose_status && !have_first_pose_) {
     have_first_pose_ = true;
   }
